@@ -1,13 +1,19 @@
-# Redisync: Redis Data Migration Tool
+# **Redisync**: Redis Data Migration Tool
 ### Overview
 
 **Redisync** is a Python script designed to facilitate the migration of data between Redis instances or clusters. It connects to source and target Redis instances, identifies master nodes, and securely migrates data, ensuring a smooth transition between environments.
 Features
 
-- Multi-Cluster Support: Migrate data across different Redis clusters.
-- Password Authentication: Securely connect to clusters with password protection.
-- Logging: Comprehensive logging to track the migration process.
-- Flexible Output: Customize log output (syslog, stdout, or file).
+> - Multi-Cluster Support: Migrate data across different Redis clusters.
+> - Password Authentication: Securely connect to clusters with password protection.
+> - Logging: Comprehensive logging to track the migration process.
+> - Flexible Output: Customize log output (syslog, stdout, or file).
+
+### How to install Redisync:
+
+```console
+curl -sLo redisync https://github.com/theahmedarafa/redisync/releases/download/$(curl -s https://api.github.com/repos/theahmedarafa/redisync/releases/latest | grep tag_name | cut -d '"' -f 4)/redisync
+```
 
 ### Setup and Configuration
 
@@ -65,8 +71,8 @@ Modify the following variables in the script to suit your environment:
 
 Run the script with Python:
 
-```bash
-python3 migrate.py
+```console
+python3 redisync
 ```
 Or configure a cronjob to apply the script to migrate the data in the proper data and then monitor the migration process through the selected logging output.
 
