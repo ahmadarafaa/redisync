@@ -1,11 +1,11 @@
 # **Redisync**: Redis Data Migration Tool
 <p align="center">
-  <img src="https://github.com/theahmedarafa/redisync/assets/27172527/6cb04cd2-a9fc-4e3b-8e97-9f60a6583e11" alt="Redisync" width="500">
+  <img src="https://github.com/ahmadarafaa/redisync/assets/27172527/6cb04cd2-a9fc-4e3b-8e97-9f60a6583e11" alt="Redisync" width="500">
 </p>
 
 ### Overview
 
-**Redisync** is a Python script designed to facilitate the migration of data between Redis instances or clusters. It connects to source and target Redis instances, identifies master nodes, and securely migrates data, ensuring a smooth transition between environments.
+**Redisync** is a Python script that facilitates data migration between Redis instances or clusters. It connects to source and target Redis instances, identifies master nodes, and securely migrates data, ensuring a smooth transition between environments.
 
 **Features**
 
@@ -17,12 +17,12 @@
 ### Redisync installation:
 
 ```bash
-curl -sLo redisync https://github.com/theahmedarafa/redisync/releases/download/$(curl -s https://api.github.com/repos/theahmedarafa/redisync/releases/latest | grep tag_name | cut -d '"' -f 4)/redisync
+curl -sLo redisync https://github.com/ahmadarafaa/redisync/releases/download/$(curl -s https://api.github.com/repos/ahmadarafaa/redisync/releases/latest | grep tag_name | cut -d '"' -f 4)/redisync
 ```
 
 ### Setup and Configuration
 
-- Dependencies: Ensure Redis module is installed:
+- Dependencies: Ensure the Redis module is installed:
     
     ```python
     python3 -m pip install redis
@@ -35,14 +35,14 @@ curl -sLo redisync https://github.com/theahmedarafa/redisync/releases/download/$
 
 1. Redis Clusters:
 
-    source_hosts: List of IP addresses or hostnames for the source Redis cluster "it could be one IP if you have Redis was installed as a standalone".
+    source_hosts: List of IP addresses or hostnames for the source Redis cluster "It could be one IP if you have Redis installed as a standalone".
 
     Example: 
     ```python
     source_hosts: ['172.21.0.1', '172.21.0.2', '172.21.0.3']
     ```
     
-    target_hosts: List of IP addresses or hostnames for the target Redis cluster "it could be one IP if you have Redis was installed as a standalone".
+    target_hosts: List of IP addresses or hostnames for the target Redis cluster "It could be one IP if you have Redis installed as a standalone".
     
     Example: 
     ```python
