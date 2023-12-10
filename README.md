@@ -52,7 +52,7 @@ curl -sLo redisync https://github.com/ahmadarafaa/redisync/releases/download/$(c
 ```bash
 python3 redisync
 ```
-- Use --generate-config-file to create a config template. Command-line options like --source=IPs override config settings.
+- Use `--generate-config-file` to create a config template. Command-line options like --source=IPs override config settings.
 
 ### Configuration file:
 ```bash
@@ -74,6 +74,24 @@ target_password = targetP@ssw0rd
 output_destination = syslog
 ```
 
+### Confiuration Example:
+```bash
+$ sudo python3 redisync.py --help
+usage: redisync.py [-h] [--config] [--source] [--source-password] [--target target] [--target-password] [--output] [--generate-config-file]
+
+Redisync: Redis Data Migration Tool
+
+options:
+  -h, --help            show this help message and exit
+  --config              Path to configuration file, "Default file: /etc/redisync.conf"
+  --source              Comma-separated list of source host addresses "It could be one Redis standalone instance"
+  --source-password     Password for source Redis instances
+  --target target       Comma-separated list of target host addresses "It could be one Redis standalone instance"
+  --target-password     Password for target Redis instances
+  --output              Output destination: syslog, stdout, or file
+  --generate-config-file
+                        Generate a template of the default configuration file
+```
 ### Conclusion
 
 **Redisync** streamlines the Redis data migration process, combining efficiency with security. Whether upgrading your infrastructure or synchronizing data across clusters, Redisync is your go-to tool.
