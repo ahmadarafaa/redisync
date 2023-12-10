@@ -110,12 +110,12 @@ def migrate_redis_data(source_hosts, target_hosts, source_password=None, target_
 
 # Set up command-line argument parsing
 parser = argparse.ArgumentParser(description="Redisync: Redis Data Migration Tool")
-parser.add_argument('--config', default='/etc/redisync.conf', help='Path to configuration file, "Default file: /etc/redisync.conf"')
-parser.add_argument('--source', help='Comma-separated list of source host addresses "It could be one Redis standalone instance"')
-parser.add_argument('--source-password', help='Password for source Redis instances')
-parser.add_argument('--target', help='Comma-separated list of target host addresses "It could be one Redis standalone instance"')
-parser.add_argument('--target-password', help='Password for target Redis instances')
-parser.add_argument('--output', help='Output destination: syslog, stdout, or file')
+parser.add_argument('--config', default='/etc/redisync.conf', metavar='', help='Path to configuration file, "Default file: /etc/redisync.conf"')
+parser.add_argument('--source', metavar='', help='Comma-separated list of source host addresses "It could be one Redis standalone instance"')
+parser.add_argument('--source-password', metavar='', help='Password for source Redis instances')
+parser.add_argument('--target', metavar='target', help='Comma-separated list of target host addresses "It could be one Redis standalone instance"')
+parser.add_argument('--target-password', metavar='', help='Password for target Redis instances')
+parser.add_argument('--output', metavar='', help='Output destination: syslog, stdout, or file')
 parser.add_argument('--generate-config-file', action='store_true', help='Generate a template of the default configuration file')
 
 args = parser.parse_args()
