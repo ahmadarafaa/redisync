@@ -9,10 +9,17 @@
 
 **Features**
 
-- Multi-Cluster Support: Migrate data across different Redis clusters.
-- Password Authentication: Securely connect to clusters with password protection.
-- Logging: Comprehensive logging to track the migration process.
-- Flexible Output: Customize log output (syslog, stdout, or file).
+**- Multi-Cluster Support:** Migrate data across different Redis clusters.
+
+**- Password Authentication:** Secure connections with password protection.
+
+**- Logging:** Comprehensive logging to track the migration process.
+
+**- Flexible Output:** Customize log output (syslog, stdout, or file).
+
+**- Config File Support:** Use a configuration file for easy setup.
+
+**- Command-Line Options:** Overwrite config file settings via command-line.
 
 ### Redisync installation:
 
@@ -22,64 +29,50 @@ curl -sLo redisync https://github.com/ahmadarafaa/redisync/releases/download/$(c
 
 ### Setup and Configuration
 
-- Dependencies: Ensure the Redis module is installed:
+- **Dependencies:** Ensure the Redis module is installed:
     
     ```python
     python3 -m pip install redis
     ```
         
-- Configuration: Edit the script to specify source and target Redis hosts and passwords.
-    Logging: Set the desired output method (syslog, stdout, or file).
+- **Configuration:** Configuration File: Use /etc/redisync.conf for settings or provide a custom path.
 
-#### Modify the following variables in the script to suit your environment:
+- **Command-Line Overrides:** Modify settings for a single run with command-line arguments.
 
-1. Redis Clusters:
 
-    source_hosts: List of IP addresses or hostnames for the source Redis cluster "It could be one IP if you have Redis installed as a standalone".
+### Configuration Variables
 
-    Example: 
-    ```python
-    source_hosts: ['172.21.0.1', '172.21.0.2', '172.21.0.3']
-    ```
-    
-    target_hosts: List of IP addresses or hostnames for the target Redis cluster "It could be one IP if you have Redis installed as a standalone".
-    
-    Example: 
-    ```python
-    target_hosts: ['173.21.0.1', '173.21.0.2', '173.21.0.3']
-    ```
-
-2. Authentication:
-    
-    source_password: Password for the source Redis cluster.
-    
-    Example: 
-    ```python
-    source_password: "sourcePassword123"
-    ```
-    target_password: Password for the target Redis cluster.
-    
-    Example: 
-    ```python
-    target_password: "targetPassword456"
-    ```
-
-3. Logging Configuration:
-    output_destination: Choose the logging output ('syslog', 'stdout', or 'file').
-    
-    Example: 
-    ```python
-    output_destination: 'file' #(Logs will be written to redisync.log)
-    ```
-
+    source_hosts: Source Redis IPs (e.g.: 192.168.1.2, 192.168.1.3, 192.168.1.4).
+    target_hosts: Target Redis IPs (e.g.: 192.168.1.5, 192.168.1.6, 192.168.1.7).
+    source_password/target_password: Authentication passwords.
+    output_destination: Log output method (e.g.: file, syslog, stdout)
 ### Usage
 
-Run the script with Python:
-
+- Run with Python or set up as a cron job:
 ```bash
 python3 redisync
 ```
-Or configure a cronjob to apply the script to migrate the data in the proper data and then monitor the migration process through the selected logging output.
+- Use --generate-config-file to create a config template. Command-line options like --source=IPs override config settings.
+
+### Configuration file:
+```bash
+$ sudo python3 redisync.py --generate-config-file
+Configuration template '/etc/redisync.conf' generated.
+$ cat /etc/redisync.conf                         
+# Source credentials
+[source]
+source_hosts = 192.168.1.2, 192.168.1.3, 192.168.1.4
+source_password = sourceP@ssw0rd
+
+# Target credentials
+[target]
+target_hosts = 192.168.1.5, 192.168.1.6, 192.168.7
+target_password = targetP@ssw0rd
+
+# Output configuration
+[output]
+output_destination = syslog
+```
 
 ### Conclusion
 
