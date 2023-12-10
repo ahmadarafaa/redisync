@@ -1,36 +1,29 @@
 import redis
 import logging
+import configparser
+import argparse
 from logging.handlers import SysLogHandler
 
-# Redis Configuration
-source_hosts = ['172.18.0.2', '172.18.0.5']
-target_hosts = ['172.18.0.4', '172.18.0.6']
-source_password = "sourcePassword123"
-target_password = "targetPassword456"
 
-# Configure logging
-logger = logging.getLogger('redisync')
-logger.setLevel(logging.INFO)
+def generate_config_template():
+    template = """
+# Source credentials
+[source]
+source_hosts = 192.168.1.2, 192.168.1.3
+source_password = sourceP@ssw0rd
 
-# Output destination can be 'syslog', 'stdout', or 'file'
-output_destination = 'syslog'  # Change as needed
+# Target credentials
+[target]
+target_hosts = 192.168.1.4, 192.168.1.5
+target_password = targetP@ssw0rd
 
-if output_destination == 'syslog':
-    syslog_handler = SysLogHandler(address='/dev/log')
-    syslog_formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
-    syslog_handler.setFormatter(syslog_formatter)
-    logger.addHandler(syslog_handler)
-elif output_destination == 'stdout':
-    stdout_handler = logging.StreamHandler()
-    stdout_formatter = logging.Formatter('%(asctime)s - (redisync) - %(levelname)s - %(message)s')
-    stdout_handler.setFormatter(stdout_formatter)
-    logger.addHandler(stdout_handler)
-elif output_destination == 'file':
-    file_handler = logging.FileHandler('test-redisync.log')
-    file_formatter = logging.Formatter('%(asctime)s - (redisync) - %(levelname)s - %(message)s')
-    file_handler.setFormatter(file_formatter)
-    logger.addHandler(file_handler)
-
+# Output configuration
+[output]
+output_destination = syslog
+    """
+    with open('/etc/redisync.conf', 'w') as file:
+        file.write(template.strip())
+    print("Configuration template '/etc/redisync.conf' generated.")
 def output_keyspace_info(keyspace_info, label):
     keyspace_str = ', '.join([f"{db}:keys={info['keys']},expires={info.get('expires', 0)},avg_ttl={info.get('avg_ttl', 0)}" for db, info in keyspace_info.items()])
     if keyspace_str:
@@ -113,6 +106,56 @@ def migrate_redis_data(source_hosts, target_hosts, source_password=None, target_
     logger.info("Migration finished. Here is the final status:")
     output_keyspace_info(final_source_keyspace, "Source")
     output_keyspace_info(final_target_keyspace, "Target")
+
+
+# Set up command-line argument parsing
+parser = argparse.ArgumentParser(description="Redisync: Redis Data Migration Tool")
+parser.add_argument('--config', default='/etc/redisync.conf', help='Path to configuration file, "Default file: /etc/redisync.conf"')
+parser.add_argument('--source', help='Comma-separated list of source host addresses "It could be one Redis standalone instance"')
+parser.add_argument('--source-password', help='Password for source Redis instances')
+parser.add_argument('--target', help='Comma-separated list of target host addresses "It could be one Redis standalone instance"')
+parser.add_argument('--target-password', help='Password for target Redis instances')
+parser.add_argument('--output', help='Output destination: syslog, stdout, or file')
+parser.add_argument('--generate-config-file', action='store_true', help='Generate a template of the default configuration file')
+
+args = parser.parse_args()
+
+# Handle --generate-config before attempting to read the config file
+if args.generate_config_file:
+    generate_config_template()
+    exit(0)
+
+# Read configuration file
+config = configparser.ConfigParser()
+config.read(args.config)
+
+
+# Retrieve configuration values and overwrite with command-line arguments if provided
+source_hosts = args.source.split(',') if args.source else config.get('source', 'source_hosts').split(',')
+source_password = args.source_password if args.source_password else config.get('source', 'source_password')
+target_hosts = args.target.split(',') if args.target else config.get('target', 'target_hosts').split(',')
+target_password = args.target_password if args.target_password else config.get('target', 'target_password')
+output_destination = args.output if args.output else config.get('output', 'output_destination')
+
+# Configure logging
+logger = logging.getLogger('redisync')
+logger.setLevel(logging.INFO)
+
+if output_destination == 'syslog':
+    syslog_handler = SysLogHandler(address='/dev/log')
+    syslog_formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
+    syslog_handler.setFormatter(syslog_formatter)
+    logger.addHandler(syslog_handler)
+elif output_destination == 'stdout':
+    stdout_handler = logging.StreamHandler()
+    stdout_formatter = logging.Formatter('%(asctime)s - (redisync) - %(levelname)s - %(message)s')
+    stdout_handler.setFormatter(stdout_formatter)
+    logger.addHandler(stdout_handler)
+elif output_destination == 'file':
+    file_handler = logging.FileHandler('snew-test-redisync.log')
+    file_formatter = logging.Formatter('%(asctime)s - (redisync) - %(levelname)s - %(message)s')
+    file_handler.setFormatter(file_formatter)
+    logger.addHandler(file_handler)
 
 # Start the migration
 migrate_redis_data(source_hosts, target_hosts, source_password, target_password)
